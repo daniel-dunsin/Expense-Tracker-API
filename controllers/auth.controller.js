@@ -23,7 +23,7 @@ const register = asyncHandler(async (req, res, next) => {
   const { password: passwordInDb, ...rest } = user._doc;
 
   res
-    .status(200)
+    .status(201)
     .send({ user: rest, token, message: 'Account created Successfully' });
 });
 

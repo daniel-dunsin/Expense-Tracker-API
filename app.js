@@ -11,6 +11,8 @@ const { notFound, errorHandler } = require('./utils/errors');
 const authRoutes = require('./routes/auth.route');
 const walletRoutes = require('./routes/wallet.route');
 const transactionRoutes = require('./routes/transaction.route');
+const isAuth = require('./middlewares/isAuth');
+const hasWallet = require('./middlewares/hasWallet');
 
 // initialize app
 const app = express();
@@ -25,8 +27,8 @@ app.disable('x-powered-by');
 
 // routes
 app.use('/auth', authRoutes);
-app.use('/transaction', transactionRoutes);
-app.use('/wallet', walletRoutes);
+app.use('/transaction', isAuth, hasWallet, transactionRoutes);
+app.use('/wallet', isAuth, walletRoutes);
 
 // errors
 app.all('*', notFound);
