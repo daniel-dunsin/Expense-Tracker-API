@@ -6,6 +6,13 @@ const TransactionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    transactionType: {
+      type: String,
+      enum: {
+        values: ['deposit', 'withdraw'],
+        message: '{VALUE} is not a valid type of transaction',
+      },
+    },
     amount: {
       type: Number,
       required: true,

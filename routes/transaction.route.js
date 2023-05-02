@@ -1,12 +1,11 @@
 const {
-  createTransaction,
   getYearTransaction,
   getMonthTransaction,
+  createTransaction,
 } = require('../controllers/transaction.controller');
 
 const router = require('express').Router();
 
-// Add new transactions
 router.post('/', createTransaction);
 
 router.get('/year', getYearTransaction);
