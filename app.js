@@ -8,6 +8,10 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./utils/errors');
 
+const authRoutes = require('./routes/auth.route');
+const walletRoutes = require('./routes/wallet.route');
+const transactionRoutes = require('./routes/transaction.route');
+
 // initialize app
 const app = express();
 
@@ -20,6 +24,9 @@ app.use(helmet());
 app.disable('x-powered-by');
 
 // routes
+app.use('/auth', authRoutes);
+app.use('/transaction', transactionRoutes);
+app.use('/wallet', walletRoutes);
 
 // errors
 app.all('*', notFound);

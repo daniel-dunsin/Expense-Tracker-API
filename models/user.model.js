@@ -1,4 +1,6 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -16,5 +18,13 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Provide password'],
   },
 });
+
+UserSchema.methods.createJWT = async function () {
+  const token = jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {
+    expiresIn: '24h',
+  });
+
+  return token;
+};
 
 module.exports = mongoose.model('User', UserSchema);

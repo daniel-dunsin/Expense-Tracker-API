@@ -13,3 +13,5 @@ router.get('/balance', getAccountBalance);
 
 // To change wallet currency
 router.patch('/change-currency', changeWalletCurrency);
+
+module.exports = router;

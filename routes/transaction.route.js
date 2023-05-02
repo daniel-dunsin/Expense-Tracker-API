@@ -12,3 +12,5 @@ router.post('/', createTransaction);
 router.get('/year', getYearTransaction);
 
 router.get('/month', getMonthTransaction);
+
+module.exports = router;
