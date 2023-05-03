@@ -63,11 +63,53 @@ const createTransaction = asyncHandler(async (req, res, next) => {
   });
 });
 
+/**
+ * @route - /transaction/year?year=2020
+ */
 const getYearTransaction = asyncHandler(async (req, res, next) => {
-  res.status(200).send('Working');
+  const date = new Date();
+  const year = parseInt(req.query.year) || date.getFullYear();
+
+  const yearTransaction = await Transaction.find({ owner: req.userId });
+
+  // filter by year
+  const result = yearTransaction?.filter((transaction) => {
+    const transactionYear = new Date(transaction.createdAt).getFullYear();
+
+    if (year === transactionYear) {
+      return transaction;
+    }
+  });
+
+  res.status(200).send({
+    transactions: result,
+  });
 });
+
+/**
+ * @route - /transaction/year?year=2020&month=09
+ */
 const getMonthTransaction = asyncHandler(async (req, res, next) => {
-  res.status(200).send('Working');
+  const date = new Date();
+  const year = parseInt(req.query.year) || date.getFullYear();
+  const month = parseInt(req.query.month) || date.getMonth() + 1;
+
+  const allTransactions = await Transaction.find({ owner: req.userId });
+
+  const monthTransaction = allTransactions.filter((transaction) => {
+    const transactionDate = new Date(transaction.createdAt);
+
+    if (
+      transactionDate.getFullYear() === year &&
+      transactionDate.getMonth() + 1 === month
+    ) {
+      return transaction;
+    }
+  });
+
+  res.status(200).send({
+    transactions: monthTransaction,
+  });
 });
 
 module.exports = {

@@ -22,16 +22,13 @@ const errorFormatter = (error) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-  // console.log(err);
   if (err instanceof CustomError) {
     return res.status(err.statusCode).send({ err: err.message });
   }
 
   const message = errorFormatter(err);
 
-  return res
-    .status(500)
-    .send({ err: message || 'An internal server error occured' });
+  return res.status(500).send({ err: message || err });
 };
 
 const notFound = (req, res, next) => {
