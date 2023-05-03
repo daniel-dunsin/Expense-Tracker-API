@@ -2,6 +2,9 @@ const asyncHandler = require('../utils/asyncHandler');
 const { CustomError } = require('../utils/errors');
 const Transaction = require('../models/transaction.model');
 const Wallet = require('../models/wallet.model');
+const User = require('../models/user.model');
+const sendMail = require('../utils/nodemailer');
+const formatDate = require('../utils/formatDate');
 
 /**
  * @route - /transaction?transactionType=withdraw or /transaction?transactionType=deposit
@@ -70,7 +73,10 @@ const getYearTransaction = asyncHandler(async (req, res, next) => {
   const date = new Date();
   const year = parseInt(req.query.year) || date.getFullYear();
 
-  const yearTransaction = await Transaction.find({ owner: req.userId });
+  const user = await User.findOne({ _id: req.userId });
+  const yearTransaction = await Transaction.find({
+    owner: req.userId,
+  }).populate('owner');
 
   // filter by year
   const result = yearTransaction?.filter((transaction) => {
@@ -80,6 +86,8 @@ const getYearTransaction = asyncHandler(async (req, res, next) => {
       return transaction;
     }
   });
+
+  await sendMail(user.email, `Transactions for year ${year}`, result);
 
   res.status(200).send({
     transactions: result,
@@ -94,7 +102,10 @@ const getMonthTransaction = asyncHandler(async (req, res, next) => {
   const year = parseInt(req.query.year) || date.getFullYear();
   const month = parseInt(req.query.month) || date.getMonth() + 1;
 
-  const allTransactions = await Transaction.find({ owner: req.userId });
+  const user = await User.findOne({ _id: req.userId });
+  const allTransactions = await Transaction.find({
+    owner: req.userId,
+  }).populate('owner');
 
   const monthTransaction = allTransactions.filter((transaction) => {
     const transactionDate = new Date(transaction.createdAt);
@@ -106,6 +117,12 @@ const getMonthTransaction = asyncHandler(async (req, res, next) => {
       return transaction;
     }
   });
+
+  await sendMail(
+    user.email,
+    `Transactions for month ${month}`,
+    monthTransaction
+  );
 
   res.status(200).send({
     transactions: monthTransaction,
